@@ -2,47 +2,81 @@ package com.example.leon.uhacks2016;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothServerSocket;
+import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
+import android.widget.Toast;
+
+import java.io.IOException;
+import java.util.UUID;
 
 /**
  * Created by Leon on 2/20/2016.
  */
 public class BluetoothConnect extends MainActivity{
+
+    private final static UUID uuid = UUID.fromString("fc5ffc49-00e3-4c8b-9cf1-6b72aad1001a");
     public BluetoothConnect(){
 
     }
-//    public void findDevices(){
-//        mReceiver = new BroadcastReceiver() {
-//            public void onReceive(Context context, Intent intent) {
-//                String action = intent.getAction();
-//                // When discovery finds a device
-//                if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-//                    // Get the BluetoothDevice object from the Intent
-//                    BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-//                    // Add the name and address to an array adapter to show in a ListView
-//                    devices.add(device.getName() + "\n" + device.getAddress());
-//                    Log.v("MYSHIT", "YOOOOOOOO");
-//                    Log.v("MYSHIT", devices.toString());
-//                }
-//
-//
-//            }
-//        };
-//
-//        // Register the BroadcastReceiver
-//        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-//        registerReceiver(mReceiver, filter); // Don't forget to unregister during onDestroy
-//
-//    }
-//    public void forceEnableBluetooth(){
-//        if (!BlueAdapt.isEnabled()) {
-//            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-//            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-//        }
-//    }
+    public class BluetoothPostConn extends Thread{
 
+        private final BluetoothServerSocket bluetoothServerSocket;
+
+        public BluetoothPostConn(BluetoothAdapter BlueAdapt) {
+        BluetoothServerSocket temp = null;
+        try {
+            temp = BlueAdapt.listenUsingRfcommWithServiceRecord("Insert App Name", uuid);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        bluetoothServerSocket = temp;
+    }
+
+    public void run() {
+        BluetoothSocket bluetoothSocket;
+        // This will block while listening until a BluetoothSocket is returned
+        // or an exception occurs
+        while (true) {
+            try {
+                bluetoothSocket = bluetoothServerSocket.accept();
+            } catch (IOException e) {
+                break;
+            }
+            // If a connection is accepted
+            if (bluetoothSocket != null) {
+
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        Toast.makeText(getApplicationContext(), "A connection has been accepted.",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                // Manage the connection in a separate thread
+
+                try {
+                    bluetoothServerSocket.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+        }
+    }
+
+    // Cancel the listening socket and terminate the thread
+    public void cancel() {
+        try {
+            bluetoothServerSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
 }
