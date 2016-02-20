@@ -62,8 +62,8 @@ public class MainActivity extends AppCompatActivity {
         notification.setContentText("");
 
         BlueAdapt = BluetoothAdapter.getDefaultAdapter();
-        if (BlueAdapt == null) {
-            // Device does not support Bluetooth
+        if(BlueAdapt == null){
+            //Bluetooth not supported
         }
         //devices = new ArrayAdapter<String>();//need the name of the listview for this
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void PostConnection(){
 
-        
+
     }
 
 }
