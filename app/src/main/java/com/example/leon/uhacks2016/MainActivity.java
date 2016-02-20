@@ -1,9 +1,15 @@
 package com.example.leon.uhacks2016;
 
+<<<<<<< HEAD
 import android.bluetooth.BluetoothSocket;
+=======
+import android.app.Notification;
+import android.app.NotificationManager;
+>>>>>>> origin/master
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -45,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     public static final int REQUEST_ENABLE_BT = 1;
     private static BroadcastReceiver mReceiver = null;
     static ArrayAdapter<String> devices;
+    NotificationCompat.Builder notification;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +59,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        notification = new NotificationCompat.Builder(this);
+        notification.setContentTitle("FIND YOUR DRUNK FRIEND");
+        NotificationManager NM = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notification.setSmallIcon(R.mipmap.ic_launcher);
+        notification.setContentText("");
+
         BlueAdapt = BluetoothAdapter.getDefaultAdapter();
         if(BlueAdapt == null){
             //Bluetooth not supported
@@ -70,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
 
         forceEnableBluetooth();
         findDevices();
-
+        NM.notify(0, notification.build());
 
     }
 
