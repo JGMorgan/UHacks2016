@@ -119,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void findDevices(){
         IntentFilter f = new IntentFilter(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
+        registerReceiver(mReceiver, f);
         mReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
                 String action = intent.getAction();
@@ -146,7 +147,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-=======
 //    public void forceEnableBluetooth(){
 //        if (!BlueAdapt.isEnabled()) {
 //            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -182,6 +182,5 @@ public class MainActivity extends AppCompatActivity {
 //
 //
 //    }
->>>>>>> origin/master
 
 }
