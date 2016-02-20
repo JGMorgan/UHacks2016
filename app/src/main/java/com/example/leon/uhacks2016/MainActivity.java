@@ -118,29 +118,37 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void findDevices(){
-        IntentFilter f = new IntentFilter(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
-        registerReceiver(mReceiver, f);
+        IntentFilter filter = new IntentFilter();
+
+        filter.addAction(BluetoothDevice.ACTION_FOUND);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+
+        registerReceiver(mReceiver, filter);
+        BlueAdapt.startDiscovery();
         mReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
                 String action = intent.getAction();
-                // When discovery finds a device
-                if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                    // Get the BluetoothDevice object from the Intent
-                    BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                    // Add the name and address to an array adapter to show in a ListView
-                    devices.add(device.getName() + "\n" + device.getAddress());
-                    Log.v("MYSHIT", "YOOOOOOOO");
-                    Log.v("MYSHIT", devices.toString());
+
+                if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
+                    //discovery starts, we can show progress dialog or perform other tasks
+                } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+                    //discovery finishes, dismis progress dialog
+                } else if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                    //bluetooth device found
+                    BluetoothDevice device = (BluetoothDevice) intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+                    Log.v("MESSAGE", "Found device " + device.getName());
                 }
-
-
             }
         };
 
-        // Register the BroadcastReceiver
-        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        registerReceiver(mReceiver, filter); // Don't forget to unregister during onDestroy
 
+    }
+    public void onDestroy() {
+        unregisterReceiver(mReceiver);
+
+        super.onDestroy();
     }
 
     public void PostConnection(){
