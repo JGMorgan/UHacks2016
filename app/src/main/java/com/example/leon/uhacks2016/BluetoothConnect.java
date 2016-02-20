@@ -40,9 +40,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import static android.support.v4.app.ActivityCompat.startActivityForResult;
+
 public class BluetoothConnect{
-    public BluetoothConnect(){
+
+    public static final int REQUEST_ENABLE_BT = 1;
+    private static BroadcastReceiver mReceiver = null;
+    static ArrayAdapter<String> devices;
+
+    public static void findDevices(){
+        mReceiver = new BroadcastReceiver() {
+            public void onReceive(Context context, Intent intent) {
+                String action = intent.getAction();
+                // When discovery finds a device
+                if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                    // Get the BluetoothDevice object from the Intent
+                    BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                    // Add the name and address to an array adapter to show in a ListView
+                    devices.add(device.getName() + "\n" + device.getAddress());
+                }
+            }
+        };
 
     }
+
 
 }
