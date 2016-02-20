@@ -140,10 +140,10 @@ public class MainActivity extends AppCompatActivity {
 //        registerReceiver(mReceiver, filter); // Don't forget to unregister during onDestroy
 //
 //    }
-
-    public void PostConnection(){
-
-
-    }
+//
+//    public void PostConnection(){
+//
+//
+//    }
 
 }
