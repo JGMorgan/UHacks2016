@@ -40,6 +40,8 @@ import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
+    private BluetoothAdapter BlueAdapt;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        BlueAdapt = BluetoothAdapter.getDefaultAdapter();
     }
 
     @Override
@@ -78,4 +82,6 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
 }
