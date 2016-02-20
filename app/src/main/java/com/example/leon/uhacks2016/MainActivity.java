@@ -1,8 +1,11 @@
 package com.example.leon.uhacks2016;
 
+import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothSocket;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -51,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     static ArrayList<String> devices;
     NotificationCompat.Builder notification;
     NotificationManager NM;
-
+    BluetoothManager manager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,13 +66,15 @@ public class MainActivity extends AppCompatActivity {
         NM = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notification.setSmallIcon(R.mipmap.ic_launcher);
         notification.setContentText("");
-
+        manager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
         BlueAdapt = BluetoothAdapter.getDefaultAdapter();
         if(BlueAdapt == null){
             //Bluetooth not supported
             Log.v("Bluetooth","unsupport");
         }
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            Log.v("Bluetooth", manager.getConnectedDevices(BluetoothGatt.GATT).toString());
+        }
 
         devices = new ArrayList<String>();//need the name of the listview for this
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -83,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
 
         forceEnableBluetooth();
         findDevices();
+
         NM.notify(0, notification.build());
 
     }
