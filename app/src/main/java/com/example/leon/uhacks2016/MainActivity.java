@@ -9,6 +9,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -47,9 +48,10 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothAdapter BlueAdapt;
     public static final int REQUEST_ENABLE_BT = 1;
     private static BroadcastReceiver mReceiver = null;
-    static ArrayAdapter<String> devices;
+    static ArrayList<String> devices;
     NotificationCompat.Builder notification;
-
+    NotificationManager NM;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         notification = new NotificationCompat.Builder(this);
         notification.setContentTitle("FIND YOUR DRUNK FRIEND");
-        NotificationManager NM = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NM = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notification.setSmallIcon(R.mipmap.ic_launcher);
         notification.setContentText("");
 
@@ -68,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        //devices = new ArrayAdapter<String>();//need the name of the listview for this
+        devices = new ArrayList<String>();//need the name of the listview for this
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,6 +127,9 @@ public class MainActivity extends AppCompatActivity {
                     // Add the name and address to an array adapter to show in a ListView
                     devices.add(device.getName() + "\n" + device.getAddress());
                 }
+                Log.v("MYSHIT", "YOOOOOOOO");
+                Log.v("MYSHIT", devices.toString());
+
             }
         };
 
