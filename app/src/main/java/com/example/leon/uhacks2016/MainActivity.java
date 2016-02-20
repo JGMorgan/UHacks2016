@@ -1,5 +1,6 @@
 package com.example.leon.uhacks2016;
 
+import android.bluetooth.BluetoothSocket;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -39,7 +40,7 @@ import java.util.Set;
 
 
 public class MainActivity extends AppCompatActivity {
-
+    private BluetoothSocket BlueSocket;
     private BluetoothAdapter BlueAdapt;
     public static final int REQUEST_ENABLE_BT = 1;
     private static BroadcastReceiver mReceiver = null;
@@ -55,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
         if(BlueAdapt == null){
             //Bluetooth not supported
         }
+
+
         //devices = new ArrayAdapter<String>();//need the name of the listview for this
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
