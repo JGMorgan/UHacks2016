@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     static ArrayList<String> devices;
     NotificationCompat.Builder notification;
     NotificationManager NM;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,9 +126,10 @@ public class MainActivity extends AppCompatActivity {
                     BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                     // Add the name and address to an array adapter to show in a ListView
                     devices.add(device.getName() + "\n" + device.getAddress());
+                    Log.v("MYSHIT", "YOOOOOOOO");
+                    Log.v("MYSHIT", devices.toString());
                 }
-                Log.v("MYSHIT", "YOOOOOOOO");
-                Log.v("MYSHIT", devices.toString());
+
 
             }
         };
