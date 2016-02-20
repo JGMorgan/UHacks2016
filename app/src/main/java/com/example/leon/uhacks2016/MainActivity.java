@@ -52,6 +52,9 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         BlueAdapt = BluetoothAdapter.getDefaultAdapter();
+        if(BlueAdapt == null){
+            //Bluetooth not supported
+        }
         //devices = new ArrayAdapter<String>();//need the name of the listview for this
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
