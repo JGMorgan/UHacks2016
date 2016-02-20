@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         BlueAdapt = BluetoothAdapter.getDefaultAdapter();
         if(BlueAdapt == null){
             //Bluetooth not supported
+            Log.v("Bluetooth adapter not connected","please");
         }
 
 
