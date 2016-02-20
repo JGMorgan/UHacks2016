@@ -41,6 +41,9 @@ import java.util.Set;
 public class MainActivity extends AppCompatActivity {
 
     private BluetoothAdapter BlueAdapt;
+    public static final int REQUEST_ENABLE_BT = 1;
+    private static BroadcastReceiver mReceiver = null;
+    static ArrayAdapter<String> devices;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         BlueAdapt = BluetoothAdapter.getDefaultAdapter();
+        //devices = new ArrayAdapter<String>();//need the name of the listview for this
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,15 +62,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        if (!BlueAdapt.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, BluetoothConnect.REQUEST_ENABLE_BT);
-        }
-
-
-        // Register the BroadcastReceiver
-        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        registerReceiver(mReceiver, filter); // Don't forget to unregister during onDestroy
+        forceEnableBluetooth();
+        findDevices();
 
 
     }
@@ -94,5 +91,31 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void forceEnableBluetooth(){
+        if (!BlueAdapt.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        }
+    }
+
+    public void findDevices(){
+        mReceiver = new BroadcastReceiver() {
+            public void onReceive(Context context, Intent intent) {
+                String action = intent.getAction();
+                // When discovery finds a device
+                if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                    // Get the BluetoothDevice object from the Intent
+                    BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                    // Add the name and address to an array adapter to show in a ListView
+                    devices.add(device.getName() + "\n" + device.getAddress());
+                }
+            }
+        };
+
+        // Register the BroadcastReceiver
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        registerReceiver(mReceiver, filter); // Don't forget to unregister during onDestroy
+
+    }
 
 }
