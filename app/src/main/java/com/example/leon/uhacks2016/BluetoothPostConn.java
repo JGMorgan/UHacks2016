@@ -7,4 +7,9 @@ public class BluetoothPostConn extends BluetoothConnect{
     public BluetoothPostConn(){
 
     }
+
+    public void PostConnection(){
+
+
+    }
 }
