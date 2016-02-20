@@ -1,11 +1,8 @@
 package com.example.leon.uhacks2016;
 
-<<<<<<< HEAD
 import android.bluetooth.BluetoothSocket;
-=======
 import android.app.Notification;
 import android.app.NotificationManager;
->>>>>>> origin/master
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
