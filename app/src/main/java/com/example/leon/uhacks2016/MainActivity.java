@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         notification = new NotificationCompat.Builder(this);
         notification.setContentTitle("FIND YOUR DRUNK FRIEND");
+        devices = new ArrayList<>();
         NM = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notification.setSmallIcon(R.mipmap.ic_launcher);
         notification.setContentText("");
@@ -74,6 +75,16 @@ public class MainActivity extends AppCompatActivity {
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             Log.v("Bluetooth", manager.getConnectedDevices(BluetoothGatt.GATT).toString());
+        }
+
+        Set<BluetoothDevice> pairedDevices = BlueAdapt.getBondedDevices();
+        // If there are paired devices
+        if (pairedDevices.size() > 0) {
+            // Loop through paired devices
+            for (BluetoothDevice device : pairedDevices) {
+                // Add the name and address to an array adapter to show in a ListView
+                devices.add(device.getName() + "\n" + device.getAddress());
+            }
         }
 
         devices = new ArrayList<String>();//need the name of the listview for this
@@ -131,6 +142,7 @@ public class MainActivity extends AppCompatActivity {
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
 
         registerReceiver(mReceiver, filter);
+        Log.v("TESTING", "starting discovery");
         BlueAdapt.startDiscovery();
         mReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
