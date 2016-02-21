@@ -23,60 +23,111 @@ public class BluetoothConnect extends MainActivity{
     public BluetoothConnect(){
 
     }
-    public class BluetoothPostConn extends Thread{
+        public class BluetoothPostConn extends Thread{
 
-        private final BluetoothServerSocket bluetoothServerSocket;
+            private final BluetoothServerSocket bluetoothServerSocket;
 
-        public BluetoothPostConn(BluetoothAdapter BlueAdapt) {
-        BluetoothServerSocket temp = null;
-        try {
-            temp = BlueAdapt.listenUsingRfcommWithServiceRecord("Insert App Name", uuid);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        bluetoothServerSocket = temp;
-    }
-
-    public void run() {
-        BluetoothSocket bluetoothSocket;
-        // This will block while listening until a BluetoothSocket is returned
-        // or an exception occurs
-        while (true) {
+            public BluetoothPostConn(BluetoothAdapter BlueAdapt) {
+            BluetoothServerSocket temp = null;
             try {
-                bluetoothSocket = bluetoothServerSocket.accept();
+                temp = BlueAdapt.listenUsingRfcommWithServiceRecord("Insert App Name", uuid);
+
             } catch (IOException e) {
-                break;
+                e.printStackTrace();
             }
-            // If a connection is accepted
-            if (bluetoothSocket != null) {
+            bluetoothServerSocket = temp;
+        }
 
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        Toast.makeText(getApplicationContext(), "A connection has been accepted.",
-                                Toast.LENGTH_SHORT).show();
+            public void run() {
+                BluetoothSocket bluetoothSocket;
+                // This will block while listening until a BluetoothSocket is returned
+                // or an exception occurs
+                while (true) {
+                    try {
+                        bluetoothSocket = bluetoothServerSocket.accept();
+                    } catch (IOException e) {
+                        break;
                     }
-                });
+                    // If a connection is accepted
+                    if (bluetoothSocket != null) {
 
-                // Manage the connection in a separate thread
+                        runOnUiThread(new Runnable() {
+                            public void run() {
+                                Toast.makeText(getApplicationContext(), "A connection has been accepted.",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
 
+                        // Manage the connection in a separate thread
+
+                        try {
+                            bluetoothServerSocket.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                    }
+                }
+            }
+
+            // Cancel the listening socket and terminate the thread
+            public void cancel() {
                 try {
                     bluetoothServerSocket.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                break;
+            }
+        }
+
+    private class ConnectingThread extends Thread {
+        private final BluetoothSocket bluetoothSocket;
+        private final BluetoothDevice bluetoothDevice;
+
+        public ConnectingThread(BluetoothDevice device) {
+
+            BluetoothSocket temp = null;
+            bluetoothDevice = device;
+
+            // Get a BluetoothSocket to connect with the given BluetoothDevice
+            try {
+                temp = bluetoothDevice.createRfcommSocketToServiceRecord(uuid);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            bluetoothSocket = temp;
+        }
+
+        public void run() {
+            // Cancel discovery as it will slow down the connection
+            BlueAdapt.cancelDiscovery();
+
+            try {
+                // This will block until it succeeds in connecting to the device
+                // through the bluetoothSocket or throws an exception
+                bluetoothSocket.connect();
+            } catch (IOException connectException) {
+                connectException.printStackTrace();
+                try {
+                    bluetoothSocket.close();
+                } catch (IOException closeException) {
+                    closeException.printStackTrace();
+                }
+            }
+
+            // Code to manage the connection in a separate thread
+            /*
+               manageBluetoothConnection(bluetoothSocket);
+            */
+        }
+
+        // Cancel an open connection and terminate the thread
+        public void cancel() {
+            try {
+                bluetoothSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
-
-    // Cancel the listening socket and terminate the thread
-    public void cancel() {
-        try {
-            bluetoothServerSocket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-}
 }
